@@ -5,37 +5,42 @@ const heartLoader = document.querySelector(".cssload-main");
 const yesBtn = document.querySelector(".js-yes-btn");
 const noBtn = document.querySelector(".js-no-btn");
 
-// Function to handle the "No" button running away
+// Function to move the button within safe screen boundaries
 const moveButton = () => {
-  // Calculate max coordinates ensuring the button stays inside the visible screen
-  // window.innerWidth/Height gets the full mobile screen size
-  const maxX = window.innerWidth - noBtn.offsetWidth;
-  const maxY = window.innerHeight - noBtn.offsetHeight;
+  // 1. Get the size of the button
+  const btnWidth = noBtn.offsetWidth;
+  const btnHeight = noBtn.offsetHeight;
 
-  const newX = Math.floor(Math.random() * maxX);
-  const newY = Math.floor(Math.random() * maxY);
+  // 2. Calculate max available space (Screen size minus button size)
+  // We add a 20px padding so it doesn't touch the very edge
+  const maxX = window.innerWidth - btnWidth - 20;
+  const maxY = window.innerHeight - btnHeight - 20;
 
-  // We use fixed positioning to move it relative to the viewport/screen
-  noBtn.style.position = "fixed";
+  // 3. Generate random coordinates within the safe zone
+  const newX = Math.max(10, Math.floor(Math.random() * maxX));
+  const newY = Math.max(10, Math.floor(Math.random() * maxY));
+
+  // 4. Apply the new position
+  noBtn.style.position = "fixed"; 
   noBtn.style.left = `${newX}px`;
   noBtn.style.top = `${newY}px`;
 };
 
-// desktop: runs away on hover
+// Desktop support
 noBtn.addEventListener("mouseover", moveButton);
 
-// mobile: runs away on touch
+// Mobile support: moves the button the moment it is touched
 noBtn.addEventListener("touchstart", (e) => {
-  e.preventDefault(); // Prevents the browser from clicking the button if the finger is too fast
+  e.preventDefault(); // Prevents the phone from actually clicking it
   moveButton();
 });
 
-// yes button functionality
+// Yes button functionality
 yesBtn.addEventListener("click", () => {
   questionContainer.style.display = "none";
   heartLoader.style.display = "inherit";
 
-  const timeoutId = setTimeout(() => {
+  setTimeout(() => {
     heartLoader.style.display = "none";
     resultContainer.style.display = "inherit";
     gifResult.play();
