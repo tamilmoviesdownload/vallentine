@@ -5,24 +5,37 @@ const heartLoader = document.querySelector(".cssload-main");
 const yesBtn = document.querySelector(".js-yes-btn");
 const noBtn = document.querySelector(".js-no-btn");
 
-// /change the postion of no button
-noBtn.addEventListener("mouseover", () => {
-  const newX = Math.floor(Math.random() * questionContainer.offsetWidth);
-  const newY = Math.floor(Math.random() * questionContainer.offsetWidth);
+const moveButton = () => {
+  // Calculate max possible coordinates (keeping button inside viewport)
+  const maxX = window.innerWidth - noBtn.offsetWidth;
+  const maxY = window.innerHeight - noBtn.offsetHeight;
 
+  const newX = Math.floor(Math.random() * maxX);
+  const newY = Math.floor(Math.random() * maxY);
+
+  // Set position to fixed/absolute relative to the whole screen
+  noBtn.style.position = "fixed"; 
   noBtn.style.left = `${newX}px`;
   noBtn.style.top = `${newY}px`;
+};
+
+// Run away on hover (Desktop)
+noBtn.addEventListener("mouseover", moveButton);
+
+// Run away on touch (Mobile)
+noBtn.addEventListener("touchstart", (e) => {
+    e.preventDefault(); // Prevents accidental clicking
+    moveButton();
 });
 
-// yes button functionality
-
+// Yes button functionality
 yesBtn.addEventListener("click", () => {
   questionContainer.style.display = "none";
-  heartLoader.style.display = "inherit";
+  heartLoader.style.display = "block";
 
-  const timeoutId = setTimeout(() => {
+  setTimeout(() => {
     heartLoader.style.display = "none";
-    resultContainer.style.display = "inherit";
+    resultContainer.style.display = "flex";
     gifResult.play();
   }, 3000);
 });
